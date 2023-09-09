@@ -38,7 +38,25 @@ export class UserController {
             const { email, password } = req.body;
             const result = await this.userBusiness.login( email, password );
             res.status( 200 ).send( { data: result } )
-            
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+
+    }
+
+    getPublicUserById = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const token = req.headers.authorization as string;
+            const result = await this.userBusiness.getPublicUserById( token );
+            res.status( 200 ).send( result );
+
         } catch ( error: any ) {
             if ( error instanceof CustomError ) {
                 res.status( 404 ).send( error.message );

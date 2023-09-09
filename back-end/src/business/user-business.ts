@@ -5,7 +5,7 @@ import { Authenticator } from '../services/authenticator';
 import { HashManager } from '../services/hash-manager';
 import { UserModel } from '../models/user-model';
 import { IdGenerator } from '../services/id-generator';
-import { User } from '@prisma/client';
+import { AuthenticationData } from '../types/authenticator-type';
 
 
 export class UserBusiness {
@@ -79,6 +79,23 @@ export class UserBusiness {
 
     }
 
+    getPublicUserById = async ( token: string ) => {
 
+        try {
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            const user = await this.userData.getPublicUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            return user;
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
 
 }
