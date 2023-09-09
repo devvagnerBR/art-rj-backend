@@ -1,10 +1,10 @@
 import { User } from "@prisma/client";
-import { USER_MODEL } from "../models/user-model";
+import { UserModel } from "../models/user-model";
 import { PRISMA_CLIENT } from "./prisma";
 
-export class USER_DATA {
+export class UserData {
 
-    signup = async ( user: USER_MODEL ) => {
+    signup = async ( user: UserModel ) => {
         try {
 
             await PRISMA_CLIENT.user.create( {
@@ -30,7 +30,7 @@ export class USER_DATA {
                 where: { email }
             } )
 
-            return user;
+            return user
 
         } catch ( error: any ) {
             throw new Error( error.message )
@@ -41,16 +41,32 @@ export class USER_DATA {
     checkUsername = async ( username: string ) => {
 
         try {
-
             const user = await PRISMA_CLIENT.user.findFirst( {
                 where: { username }
             } )
 
-            return user;
+            return user
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+    }
+
+    getUserByEmail = async ( email: string ) => {
+
+        try {
+
+            const result: User | null = await PRISMA_CLIENT.user.findUnique( {
+                where: { email }
+            } )
+
+            return result;
 
         } catch ( error: any ) {
             throw new Error( error.message )
         }
 
     }
+
+
 }

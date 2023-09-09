@@ -4,7 +4,7 @@ import { Role } from '@prisma/client';
 
 
 
-export class USER_MODEL {
+export class UserModel {
 
     private role: Role
     
