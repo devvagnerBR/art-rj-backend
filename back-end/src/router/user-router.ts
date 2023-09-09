@@ -20,4 +20,4 @@ export const userRouter = express.Router();
 userRouter.post( "/signup", userController.signup )
 userRouter.post( "/login", userController.login )
 userRouter.get( "/user", userController.getPublicUserById )
-
+userRouter.patch( "/user/username", userController.updateUsername )

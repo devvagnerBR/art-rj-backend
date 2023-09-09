@@ -39,10 +39,10 @@ export class UserBusiness {
 
             const passwordAsHash = await this.hashManager.createHash( password );
 
-            const hasUsername = await this.userData.checkUsername( username )
+            const hasUsername = await this.userData.getUserByUsername( username )
             if ( hasUsername ) throw new CustomError( 400, "username already registered" );
 
-            const hasEmail = await this.userData.checkEmail( email )
+            const hasEmail = await this.userData.getUserByEmail( email )
             if ( hasEmail ) throw new CustomError( 400, "email already registered" );
 
             const id: string = this.idGenerator.generateId()
@@ -96,6 +96,36 @@ export class UserBusiness {
             throw new CustomError( error.statusCode, error.message )
         }
 
+    }
+
+    updateUsername = async ( username: string, token: string ) => {
+
+        try {
+
+            if ( !username || !token ) throw new CustomError( 401, "one or more values are empty" );
+            if ( !username ) throw new CustomError( 404, "new username not informed" );
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            const user = await this.userData.getPrivateUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            const checkUsername = await this.userData.getUserByUsername( username );
+
+            if ( user.username === username ) throw new CustomError( 404, "new username entered is the same as the current username" );
+            if ( checkUsername ) throw new CustomError( 409, "username already in use" );
+
+            if ( username.length > 20 ) throw new CustomError( 404, "username can be a maximum of 20 characters" );
+            if ( username.length < 3 ) throw new CustomError( 400, "username field must be greater than 3" );
+            if ( typeof username !== "string" ) throw new CustomError( 404, "fields needs to be a string" );
+
+            await this.userData.updateUsername( username, tokenData.id );
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
     }
 
 }

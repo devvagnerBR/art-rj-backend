@@ -66,4 +66,23 @@ export class UserController {
         }
 
     }
+
+    updateUsername = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const { username } = req.body;
+            const token = req.headers.authorization as string;
+            await this.userBusiness.updateUsername( username, token );
+            res.status( 200 ).send( { message: "user updated successfully" } );
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+
+    }
 }
