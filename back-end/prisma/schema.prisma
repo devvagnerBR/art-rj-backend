@@ -11,11 +11,12 @@ model User {
 
     id String @id 
     username String @unique @db.VarChar(20)
+    password String
     email String @unique
-    role Role @default(USER)
+    role Role  @default(USER)
     created_at DateTime @default(now())
     birthday String
-    status Boolean
+    status Boolean @default(false)
 
     @@map("user")
     
