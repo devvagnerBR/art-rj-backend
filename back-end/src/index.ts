@@ -6,6 +6,7 @@ import { userRouter } from "./router/user-router";
 const port = process.env.PORT || 3003;
 
 const app = express();
+
 app.use( cors() );
 app.use( express.json() );
 

@@ -17,6 +17,7 @@ model User {
     created_at DateTime @default(now())
     birthday String
     status Boolean @default(false)
+    avatar String @default("https://static.vecteezy.com/system/resources/previews/005/291/824/non_2x/illustration-of-statue-of-christ-the-redeemer-rio-de-janeiro-brazil-free-vector.jpg")
 
     @@map("user")
     

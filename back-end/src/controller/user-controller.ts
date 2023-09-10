@@ -85,4 +85,25 @@ export class UserController {
         }
 
     }
+
+
+    updateProfileImage = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const avatar = req?.file
+            const token = req.headers.authorization as string;
+
+            await this.userBusiness.updateProfileImage( avatar, token )
+
+            res.status( 200 ).send( { message: "profile image updated successfully" } );
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+    }
 }

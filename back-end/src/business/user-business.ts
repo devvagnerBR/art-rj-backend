@@ -6,6 +6,10 @@ import { HashManager } from '../services/hash-manager';
 import { UserModel } from '../models/user-model';
 import { IdGenerator } from '../services/id-generator';
 import { AuthenticationData } from '../types/authenticator-type';
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from '../data/firebase';
+import multer from 'multer';
+
 
 
 export class UserBusiness {
@@ -31,8 +35,6 @@ export class UserBusiness {
             if ( password.length < 6 ) throw new CustomError( 400, "Password must contain 6 characters or more" );
             if ( typeof username !== "string" || typeof email !== "string" || typeof birthday !== "string" ) throw new CustomError( 404, "fields needs to be a string" );
             if ( !email.includes( "@gmail.com" ) ) throw new CustomError( 400, "unsupported email" );
-
-            //verificar se username ja esta em uso
 
             const passwordRegex: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
             if ( !passwordRegex.test( password ) ) throw new CustomError( 400, 'The password must contain an uppercase character and a number' );
@@ -126,6 +128,33 @@ export class UserBusiness {
         } catch ( error: any ) {
             throw new CustomError( error.statusCode, error.message )
         }
+    }
+
+
+    updateProfileImage = async ( avatar: any, token: string ) => {
+
+
+        try {
+
+            if ( !avatar ) throw new CustomError( 401, "file field is empty" );
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            const user = await this.userData.getPrivateUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            const imageRef = ref( storage, `avatars/${tokenData.id}` )
+            const metadata = {contentType: avatar?.mimetype}
+            const snapshot = await uploadBytesResumable(imageRef, avatar.buffer, metadata);
+            const url = await getDownloadURL(snapshot.ref)
+            await this.userData.updateProfileImage(url,tokenData.id)
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
     }
 
 }

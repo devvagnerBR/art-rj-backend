@@ -3,6 +3,7 @@ import { UserModel } from "../models/user-model";
 import { PRISMA_CLIENT } from "./prisma";
 import { PUBLIC_USER } from "../types/public-user";
 
+
 export class UserData {
 
     signup = async ( user: UserModel ) => {
@@ -59,7 +60,7 @@ export class UserData {
         try {
             const user: PUBLIC_USER | null = await PRISMA_CLIENT.user.findUnique( {
                 where: { id: token },
-                select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true }
+                select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true, avatar: true }
             } )
 
             return user;
@@ -92,6 +93,22 @@ export class UserData {
             await PRISMA_CLIENT.user.update( {
                 where: { id: token },
                 data: { username: update }
+            } )
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
+
+    updateProfileImage = async ( url: string, token: string ) => {
+
+        try {
+
+            await PRISMA_CLIENT.user.update( {
+                where: { id: token },
+                data: { avatar: url }
             } )
 
         } catch ( error: any ) {
