@@ -144,4 +144,24 @@ export class UserController {
             }
         }
     }
+
+    changePassword = async ( req: Request, res: Response ) => {
+
+
+        try {
+
+            const { currentPassword, newPassword } = req.body;
+            const token = req.headers.authorization as string;
+
+            await this.userBusiness.changePassword( currentPassword, newPassword, token )
+            res.status( 200 ).send( { message: "password changed successfully" } );
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+    }
 }

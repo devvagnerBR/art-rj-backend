@@ -74,7 +74,7 @@ export class UserData {
     getPrivateUserById = async ( token: string ) => {
 
         try {
-            const user: PUBLIC_USER | null = await PRISMA_CLIENT.user.findUnique( {
+            const user: User | null = await PRISMA_CLIENT.user.findUnique( {
                 where: { id: token }
             } )
 
@@ -133,7 +133,19 @@ export class UserData {
 
     }
 
+    changePassword = async ( newPassword: string, token: string, ) => {
+
+        try {
+
+            await PRISMA_CLIENT.user.update( {
+                where: { id: token },
+                data: { password: newPassword }
+            } )
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
 }
-
-
-//ycIQyl

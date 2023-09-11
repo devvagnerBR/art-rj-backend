@@ -199,4 +199,38 @@ export class UserBusiness {
     }
 
 
+    changePassword = async ( currentPassword: string, newPassword: string, token: string ) => {
+
+        try {
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            if ( !currentPassword || !newPassword ) throw new CustomError( 409, 'one or more fields are empty' );
+
+            if ( newPassword.length > 20 ) throw new CustomError( 404, "password can be a maximum of 20 characters" );
+            if ( newPassword.length < 3 ) throw new CustomError( 400, "password field must be greater than 3" );
+            if ( newPassword.length < 6 ) throw new CustomError( 400, "password must contain 6 characters or more" );
+
+            const passwordRegex: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if ( !passwordRegex.test( newPassword ) ) throw new CustomError( 400, 'The password must contain an uppercase character and a number' );
+
+            const user = await this.userData.getPrivateUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            const passwordAsHash = await this.hashManager.createHash( newPassword );
+
+            const validatePassword = await this.hashManager.compareHash( currentPassword, user.password )
+            if ( !validatePassword ) throw new CustomError( 401, 'incorrect password' );
+
+            await this.userData.changePassword( passwordAsHash, tokenData.id );
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
+
+
 }
