@@ -7,6 +7,8 @@ import { UserModel } from '../models/user-model';
 import { IdGenerator } from '../services/id-generator';
 import { AuthenticationData } from '../types/authenticator-type';
 import { Storage } from '../services/storage';
+import { FILE } from '../types/file-type';
+import { Email } from '../services/nodemailer';
 
 export class UserBusiness {
 
@@ -15,7 +17,8 @@ export class UserBusiness {
         private userData: UserData,
         private authenticator: Authenticator,
         private hashManager: HashManager,
-        private idGenerator: IdGenerator
+        private idGenerator: IdGenerator,
+        private email: Email
 
     ) { }
 
@@ -126,7 +129,7 @@ export class UserBusiness {
         }
     }
 
-    updateProfileImage = async ( avatar: any, token: string ) => {
+    updateProfileImage = async ( avatar: FILE, token: string ) => {
 
         try {
 
@@ -138,7 +141,6 @@ export class UserBusiness {
 
             const user = await this.userData.getPrivateUserById( tokenData.id );
             if ( !user ) throw new CustomError( 404, "user not found" );
-
             const url = await this.storage.createImageURL( avatar, `avatars/${tokenData.id}` )
             await this.userData.updateProfileImage( url, tokenData.id )
 
@@ -147,5 +149,29 @@ export class UserBusiness {
         }
 
     }
+
+
+    sendValidateAccount = async ( token: string ) => {
+
+        try {
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            const user = await this.userData.getPrivateUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            const code = await this.email.generateCode();
+            await this.email.sendValidate( user.email, code );
+
+            return code
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
+
 
 }

@@ -117,4 +117,20 @@ export class UserData {
 
     }
 
+    validateAccount = async ( token: string ) => {
+
+        try {
+
+            await PRISMA_CLIENT.user.update( {
+                where: { id: token },
+                data: { status: true }
+            } )
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+
+    }
+
 }
