@@ -6,16 +6,12 @@ import { HashManager } from '../services/hash-manager';
 import { UserModel } from '../models/user-model';
 import { IdGenerator } from '../services/id-generator';
 import { AuthenticationData } from '../types/authenticator-type';
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from '../data/firebase';
-import multer from 'multer';
-
-
+import { Storage } from '../services/storage';
 
 export class UserBusiness {
 
     constructor(
-
+        private storage: Storage,
         private userData: UserData,
         private authenticator: Authenticator,
         private hashManager: HashManager,
@@ -130,9 +126,7 @@ export class UserBusiness {
         }
     }
 
-
     updateProfileImage = async ( avatar: any, token: string ) => {
-
 
         try {
 
@@ -145,11 +139,8 @@ export class UserBusiness {
             const user = await this.userData.getPrivateUserById( tokenData.id );
             if ( !user ) throw new CustomError( 404, "user not found" );
 
-            const imageRef = ref( storage, `avatars/${tokenData.id}` )
-            const metadata = {contentType: avatar?.mimetype}
-            const snapshot = await uploadBytesResumable(imageRef, avatar.buffer, metadata);
-            const url = await getDownloadURL(snapshot.ref)
-            await this.userData.updateProfileImage(url,tokenData.id)
+            const url = await this.storage.createImageURL( avatar, `avatars/${tokenData.id}` )
+            await this.userData.updateProfileImage( url, tokenData.id )
 
         } catch ( error: any ) {
             throw new CustomError( error.statusCode, error.message )

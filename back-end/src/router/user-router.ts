@@ -6,10 +6,12 @@ import { HashManager } from "../services/hash-manager";
 import { Authenticator } from "../services/authenticator";
 import { UserController } from "../controller/user-controller";
 import multer from "multer";
+import { Storage } from "../services/storage";
 
 
 
 const userBusiness: UserBusiness = new UserBusiness(
+    new Storage(),
     new UserData(),
     new Authenticator(),
     new HashManager(),
