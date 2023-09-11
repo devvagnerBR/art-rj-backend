@@ -33,3 +33,4 @@ userRouter.post( "/user/avatar", upload.single( "avatar" ), userController.updat
 
 
 userRouter.post( "/user/confirm-account", userController.sendValidateAccount )
+userRouter.post( "/user/validate-account", userController.validateAccount )

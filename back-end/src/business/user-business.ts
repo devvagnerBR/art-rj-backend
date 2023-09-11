@@ -174,4 +174,29 @@ export class UserBusiness {
     }
 
 
+    validateAccount = async ( code: string, confirmationCode: string, token: string, ) => {
+
+        try {
+
+            const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
+            if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
+            if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
+
+            const user = await this.userData.getPrivateUserById( tokenData.id );
+            if ( !user ) throw new CustomError( 404, "user not found" );
+
+            if ( !code || !confirmationCode ) throw new CustomError( 409, 'one or more fields are empty' );
+
+            const validate = await this.email.validateCode( code, confirmationCode );
+            if ( !validate ) throw new CustomError( 404, "token needs to be a string" );
+
+            await this.userData.validateAccount( tokenData.id )
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
+
+
 }

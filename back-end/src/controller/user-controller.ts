@@ -124,4 +124,24 @@ export class UserController {
             }
         }
     }
+
+
+    validateAccount = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const { code, confirmationCode } = req.body;
+            const token = req.headers.authorization as string;
+
+            await this.userBusiness.validateAccount( code, confirmationCode, token )
+            res.status( 200 ).send( { message: "account validated successfully" } );
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+    }
 }

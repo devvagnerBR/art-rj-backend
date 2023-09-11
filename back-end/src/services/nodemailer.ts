@@ -56,8 +56,18 @@ export class Email {
     }
 
 
-    confirmValidate = async () => {
+    validateCode = async ( code: string, confirmationCode: string ) => {
 
+
+        try {
+            
+            if ( code !== confirmationCode ) throw new CustomError( 409, 'invalid confirmation code' );
+            return true;
+
+        } catch ( error: any ) {
+            throw new CustomError( 409, error.message );
+        }
     }
+
 
 }
