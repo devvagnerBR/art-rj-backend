@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { UserModel } from "../models/user-model";
 import { PRISMA_CLIENT } from "./prisma";
 import { PUBLIC_USER } from "../types/public-user";
@@ -54,13 +54,44 @@ export class UserData {
 
     }
 
+    getUserByCPF = async ( cpf: string ) => {
+
+        try {
+            const result: User | null = await PRISMA_CLIENT.user.findUnique( {
+                where: { cpf }
+            } )
+
+            return result;
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
+
+    getUserByPhoneNumber = async ( phoneNumber: string ) => {
+
+        try {
+            const result: User | null = await PRISMA_CLIENT.user.findUnique( {
+                where: { phone_number: phoneNumber }
+            } )
+
+            return result;
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
 
     getPublicUserById = async ( token: string ) => {
 
         try {
-            const user: PUBLIC_USER | null = await PRISMA_CLIENT.user.findUnique( {
+            const user: PUBLIC_USER | null = await PRISMA_CLIENT.user.findFirst( {
                 where: { id: token },
-                select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true, avatar: true }
+                select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true, avatar: true, cpf: true, phone_number: true }
             } )
 
             return user;
@@ -140,6 +171,25 @@ export class UserData {
             await PRISMA_CLIENT.user.update( {
                 where: { id: token },
                 data: { password: newPassword }
+            } )
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
+    updateUser = async ( token: string, phone_number?: string, cpf?: string ) => {
+
+
+        try {
+
+            await PRISMA_CLIENT.user.update( {
+                where: { id: token },
+                data: {
+                    cpf: cpf || undefined,
+                    phone_number: phone_number || undefined
+                }
             } )
 
         } catch ( error: any ) {

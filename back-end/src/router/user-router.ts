@@ -8,6 +8,7 @@ import { UserController } from "../controller/user-controller";
 import multer from "multer";
 import { Storage } from "../services/storage";
 import { Email } from "../services/nodemailer";
+import { Validate } from "../utils/validate";
 
 
 
@@ -19,6 +20,7 @@ const userBusiness: UserBusiness = new UserBusiness(
     new HashManager(),
     new IdGenerator(),
     new Email(),
+    new Validate( new Authenticator(), new HashManager(), new UserData() )
 );
 
 const userController: UserController = new UserController( userBusiness );
@@ -35,3 +37,4 @@ userRouter.post( "/user/avatar", upload.single( "avatar" ), userController.updat
 userRouter.post( "/user/confirm-account", userController.sendValidateAccount )
 userRouter.post( "/user/validate-account", userController.validateAccount )
 userRouter.patch( "/user/change-password", userController.changePassword )
+userRouter.patch( "/user/update", userController.updateUser )

@@ -164,4 +164,25 @@ export class UserController {
             }
         }
     }
+
+    updateUser = async ( req: Request, res: Response ) => {
+
+
+        try {
+
+            const { cpf, phone_number } = req.body;
+            const token = req.headers.authorization as string;
+            
+            await this.userBusiness.updateUser( token, cpf, phone_number )
+            res.status( 200 ).send( { message: "data updated successfully" } );
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+
+    }
 }
