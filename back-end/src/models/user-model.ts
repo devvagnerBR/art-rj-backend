@@ -13,7 +13,6 @@ export class UserModel {
         private username: string,
         private email: string,
         private password: string,
-        private birthday: string,
 
 
     ) {
@@ -24,7 +23,6 @@ export class UserModel {
     getUsername(): string { return this.username }
     getEmail(): string { return this.email }
     getPassword(): string { return this.password }
-    getBirthday(): string { return this.birthday }
     getRole(): Role { return this.role }
 
 

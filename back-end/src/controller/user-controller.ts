@@ -16,8 +16,8 @@ export class UserController {
 
         try {
 
-            const { username, email, birthday, password } = req.body;
-            const newUser: USER_DTO = { username, email, birthday, password }
+            const { username, email, password } = req.body;
+            const newUser: USER_DTO = { username, email, password }
 
             const result = await this.userBusiness.signup( newUser );
             res.status( 200 ).send( { message: "user created successfully", token: result } )
@@ -170,10 +170,10 @@ export class UserController {
 
         try {
 
-            const { cpf, phone_number } = req.body;
+            const { cpf, phone_number, birthday } = req.body;
             const token = req.headers.authorization as string;
-            
-            await this.userBusiness.updateUser( token, cpf, phone_number )
+
+            await this.userBusiness.updateUser( token, cpf, phone_number, birthday )
             res.status( 200 ).send( { message: "data updated successfully" } );
 
         } catch ( error: any ) {

@@ -15,7 +15,6 @@ export class Validate {
 
     token = async ( token: string ) => {
 
-
         const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
         if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
         if ( typeof tokenData.id !== "string" ) throw new CustomError( 404, "token needs to be a string" );
@@ -39,7 +38,6 @@ export class Validate {
 
         return user;
     }
-
 
     email = async ( email: string ) => {
 

@@ -1,10 +1,11 @@
-import { Prisma, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { UserModel } from "../models/user-model";
 import { PRISMA_CLIENT } from "./prisma";
 import { PUBLIC_USER } from "../types/public-user";
 
 
 export class UserData {
+
 
     signup = async ( user: UserModel ) => {
 
@@ -14,7 +15,6 @@ export class UserData {
                     id: user.getId(),
                     username: user.getUsername(),
                     email: user.getEmail(),
-                    birthday: user.getBirthday(),
                     password: user.getPassword()
                 }
             } )
@@ -179,7 +179,7 @@ export class UserData {
 
     }
 
-    updateUser = async ( token: string, phone_number?: string, cpf?: string ) => {
+    updateUser = async ( token: string, phone_number?: string, cpf?: string, birthday?: string ) => {
 
 
         try {
@@ -188,7 +188,8 @@ export class UserData {
                 where: { id: token },
                 data: {
                     cpf: cpf || undefined,
-                    phone_number: phone_number || undefined
+                    phone_number: phone_number || undefined,
+                    birthday: birthday || undefined
                 }
             } )
 

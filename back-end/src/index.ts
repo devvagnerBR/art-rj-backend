@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { userRouter } from "./router/user-router";
+import { productsRouter } from "./router/products-router";
 
 
 const port = process.env.PORT || 3003;
@@ -16,3 +17,4 @@ const server = app.listen( port, () => {
 } );
 
 app.use( userRouter )
+app.use( productsRouter )

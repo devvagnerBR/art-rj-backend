@@ -33,7 +33,6 @@ userRouter.get( "/user", userController.getPublicUserById )
 userRouter.patch( "/user/username", userController.updateUsername )
 userRouter.post( "/user/avatar", upload.single( "avatar" ), userController.updateProfileImage )
 
-
 userRouter.post( "/user/confirm-account", userController.sendValidateAccount )
 userRouter.post( "/user/validate-account", userController.validateAccount )
 userRouter.patch( "/user/change-password", userController.changePassword )

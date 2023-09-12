@@ -28,14 +28,14 @@ export class UserBusiness {
 
         try {
 
-            const { username, email, birthday, password } = user;
+            const { username, email, password } = user;
 
             await this.validate.username( username );
             await this.validate.email( email );
             const passwordAsHash = await this.validate.password( password );
 
             const id: string = this.idGenerator.generateId()
-            await this.userData.signup( new UserModel( id, username.toLowerCase(), email, passwordAsHash, birthday ) );
+            await this.userData.signup( new UserModel( id, username.toLowerCase(), email, passwordAsHash ) );
 
             const token: string = this.authenticator.generateToken( { id: id } )
             return token;
@@ -74,7 +74,6 @@ export class UserBusiness {
     login = async ( email: string, password: string ) => {
 
         try {
-
 
             if ( !email || !password ) throw new CustomError( 400, 'one or more fields are empty' );
             if ( !email.includes( "@gmail.com" ) ) throw new CustomError( 400, "enter a valid email address" );
@@ -225,7 +224,7 @@ export class UserBusiness {
             await this.validate.privateUser( tokenData.id );
 
             if ( !code || !confirmationCode ) throw new CustomError( 409, 'one or more fields are empty' );
-
+            await this.userData.validateAccount( tokenData.id );
 
             // const tokenData = this.authenticator.getTokenData( token ) as AuthenticationData;
             // if ( !tokenData.id ) throw new CustomError( 401, "invalid token or empty token" );
@@ -291,11 +290,11 @@ export class UserBusiness {
     }
 
 
-    updateUser = async ( token: string, cpf?: string, phone_number?: string ) => {
+    updateUser = async ( token: string, cpf?: string, phone_number?: string, birthday?: string ) => {
 
         try {
 
-            if ( !cpf && !phone_number ) throw new CustomError( 404, "at least one field must be informed" );
+            if ( !cpf && !phone_number && !birthday ) throw new CustomError( 404, "at least one field must be informed" );
 
             const tokenData = await this.validate.token( token )
 
