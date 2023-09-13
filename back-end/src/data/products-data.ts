@@ -28,7 +28,25 @@ export class ProductsData {
         }
 
 
+    }
+
+    getUserProducts = async ( token: string ) => {
+
+        try {
+
+            const products = await PRISMA_CLIENT.product.findMany( {
+                where: { owner_id: token }
+            } )
+
+            return products;
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+
 
     }
+
 
 }

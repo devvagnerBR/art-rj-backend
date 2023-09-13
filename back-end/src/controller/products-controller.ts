@@ -30,7 +30,23 @@ export class ProductsController {
             }
         }
 
+    }
 
+    getUserProducts = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const token = req.headers.authorization as string;
+            const products = await this.productsBusiness.getUserProducts( token );
+            res.status( 200 ).send( { data: products } )
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
     }
 
 }

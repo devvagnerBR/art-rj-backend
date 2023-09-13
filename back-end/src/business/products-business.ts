@@ -42,4 +42,20 @@ export class ProductsBusiness {
 
     }
 
+
+    getUserProducts = async ( token: string ) => {
+
+        try {
+
+            const tokenData = await this.validate.token( token );
+            const products = await this.productData.getUserProducts( tokenData.id );
+            return products;
+            
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+
+    }
+
 }

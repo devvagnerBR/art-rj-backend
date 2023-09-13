@@ -28,3 +28,4 @@ const upload = multer( { storage: multer.memoryStorage(), limits:{fieldSize:1000
 
 export const productsRouter = express.Router();
 productsRouter.post( "/product/image", upload.array( "book", 5 ), productsController.createProduct )
+productsRouter.get( "/user/products" , productsController.getUserProducts )
