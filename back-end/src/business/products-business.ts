@@ -16,7 +16,7 @@ export class ProductsBusiness {
     ) { }
 
 
-    createProduct = async ( title: string, slug: string, description: string, quantity: number, price: number, images: any, token: string ) => {
+    createProduct = async ( title: string, slug: string, description: string, quantity: number, price: number, images: FILE[], token: string ) => {
 
         try {
 
@@ -28,6 +28,7 @@ export class ProductsBusiness {
                 !price ||
                 !images
             ) throw new CustomError( 404, "one or more fields are empty" )
+
 
             const id: string = this.idGenerator.generateId()
             const generatedImages = await this.storage.createGroupURL( images )
@@ -50,12 +51,52 @@ export class ProductsBusiness {
             const tokenData = await this.validate.token( token );
             const products = await this.productData.getUserProducts( tokenData.id );
             return products;
-            
+
         } catch ( error: any ) {
             throw new CustomError( error.statusCode, error.message )
         }
+    }
 
+    updateProduct = async ( token: string, productId: string, description?: string, price?: number, title?: string, slug?: string, quantity?: number ) => {
 
+        try {
+
+            if ( !productId ) throw new CustomError( 404, "product id not provided" )
+
+            if (
+                !description &&
+                !price &&
+                !title &&
+                !slug &&
+                !quantity
+            ) throw new CustomError( 404, "one or more fields are empty" )
+
+            const tokenData = await this.validate.token( token )
+
+            console.log( title )
+
+            const findProduct = await this.productData.getProductByProductId( productId, tokenData.id );
+            if ( !findProduct ) throw new CustomError( 404, "no products were found by this id" );
+
+            await this.productData.updateProduct( productId, quantity, description, price, title, slug );
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+    }
+
+    getAllActiveProducts = async ( token: string ) => {
+
+        try {
+
+            await this.validate.token( token );
+            const activeProducts = await this.productData.getAllActiveProducts();
+            
+            return activeProducts;
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
     }
 
 }

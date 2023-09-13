@@ -23,9 +23,11 @@ const productsBusiness: ProductsBusiness = new ProductsBusiness(
 const productsController: ProductsController = new ProductsController( productsBusiness );
 
 
-const upload = multer( { storage: multer.memoryStorage(), limits:{fieldSize:10000000} } );
+const upload = multer( { storage: multer.memoryStorage(), limits: { fieldSize: 10000000 } } );
 
 
 export const productsRouter = express.Router();
 productsRouter.post( "/product/image", upload.array( "book", 5 ), productsController.createProduct )
-productsRouter.get( "/user/products" , productsController.getUserProducts )
+productsRouter.get( "/user/products", productsController.getUserProducts )
+productsRouter.patch( "/product/:productId", productsController.updateProduct )
+productsRouter.get( "/products/active", productsController.getAllActiveProducts )
