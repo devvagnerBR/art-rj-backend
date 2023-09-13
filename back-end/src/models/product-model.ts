@@ -1,5 +1,8 @@
 export class ProductModel {
 
+
+    private main_image: string
+
     constructor(
 
         private id: string,
@@ -11,7 +14,10 @@ export class ProductModel {
         private price: number,
         private images: string[],
 
-    ) { }
+
+    ) {
+        this.main_image = images[0]
+    }
 
 
     getId(): string { return this.id }
@@ -22,5 +28,6 @@ export class ProductModel {
     getQuantity(): number { return Number( this.quantity ) }
     getPrice(): number { return Number( this.price ) }
     getImages(): string[] { return this.images }
+    getMainImage(): string { return this.main_image }
 
 }

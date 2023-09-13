@@ -19,6 +19,7 @@ export class ProductsData {
                     quantity: product.getQuantity(),
                     price: product.getPrice(),
                     images: product.getImages(),
+                    main_image: product.getMainImage(),
 
                 }
             } )
@@ -96,5 +97,20 @@ export class ProductsData {
         }
     }
 
+
+    updateMainImage = async ( productId: string, mainImage: string ) => {
+
+        try {
+
+            await PRISMA_CLIENT.product.update( {
+                where: { id: productId },
+                data: { main_image: mainImage }
+            } )
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
 
 }

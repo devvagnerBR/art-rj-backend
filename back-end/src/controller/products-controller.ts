@@ -89,4 +89,24 @@ export class ProductsController {
         }
     }
 
+    updateMainImage = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const token = req.headers.authorization as string;
+            const { main_image } = req.body
+            const { productId } = req.params
+
+            await this.productsBusiness.updateMainImage( token, productId, main_image );
+            res.status( 200 ).send( { message: "main image updated successfully" } )
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+    }
+
 }

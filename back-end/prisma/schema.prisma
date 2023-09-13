@@ -46,7 +46,7 @@ model Product {
   quantity Int
   price Int 
   images String[]
-
+  main_image String 
   is_available Boolean @default(true)
   
   created_at DateTime @default(now())

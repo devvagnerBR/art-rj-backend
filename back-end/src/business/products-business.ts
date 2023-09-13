@@ -91,7 +91,7 @@ export class ProductsBusiness {
 
             await this.validate.token( token );
             const activeProducts = await this.productData.getAllActiveProducts();
-            
+
             return activeProducts;
 
         } catch ( error: any ) {
@@ -99,4 +99,24 @@ export class ProductsBusiness {
         }
     }
 
+
+    updateMainImage = async ( token: string, productId: string, mainImage: string ) => {
+
+        try {
+
+            if ( !mainImage ) throw new CustomError( 404, "main image url needs to be provided" );
+            const tokenData = await this.validate.token( token );
+            if ( !productId ) throw new CustomError( 404, "no products were found by this id" );
+
+            const findProduct = await this.productData.getProductByProductId( productId, tokenData.id );
+            if ( !findProduct ) throw new CustomError( 404, "no products were found by this id" );
+
+            if ( findProduct.main_image === mainImage ) throw new CustomError( 404, "informed image is already the main image" );
+            await this.productData.updateMainImage( productId, mainImage )
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
 }
