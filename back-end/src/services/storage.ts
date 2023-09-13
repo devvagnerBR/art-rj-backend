@@ -1,5 +1,7 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../data/firebase";
+import { FILE } from "../types/file-type";
+import { IdGenerator } from "./id-generator";
 
 export class Storage {
 
@@ -18,6 +20,25 @@ export class Storage {
 
     }
 
+    createGroupURL = async ( urls: FILE[] ) => {
+
+        try {
+
+            let group = []
+
+            for ( let i = 0; i < urls.length; i++ ) {
+
+                const generateURL = await this.createImageURL( urls[i], `product/${new IdGenerator().generateId()}` )
+                group.push( generateURL );
+
+            }
+
+            return group;
+
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+    }
+
 }
-
-

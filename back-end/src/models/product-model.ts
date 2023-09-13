@@ -19,8 +19,8 @@ export class ProductModel {
     getTitle(): string { return this.title }
     getSlug(): string { return this.slug }
     getDescription(): string { return this.description }
-    getQuantity(): number { return this.quantity }
-    getPrice(): number { return this.price }
+    getQuantity(): number { return Number( this.quantity ) }
+    getPrice(): number { return Number( this.price ) }
     getImages(): string[] { return this.images }
 
 }
