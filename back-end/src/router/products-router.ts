@@ -9,6 +9,7 @@ import { ProductsData } from "../data/products-data";
 import { ProductsController } from "../controller/products-controller";
 import { Storage } from "../services/storage";
 import multer from "multer";
+import { StripeAPI } from "../services/stripe";
 
 
 const productsBusiness: ProductsBusiness = new ProductsBusiness(
@@ -16,15 +17,14 @@ const productsBusiness: ProductsBusiness = new ProductsBusiness(
     new ProductsData(),
     new IdGenerator(),
     new Validate( new Authenticator(), new HashManager(), new UserData() ),
-    new Storage()
+    new Storage(),
+    new StripeAPI()
 
 );
 
 const productsController: ProductsController = new ProductsController( productsBusiness );
 
-
 const upload = multer( { storage: multer.memoryStorage(), limits: { fieldSize: 10000000 } } );
-
 
 export const productsRouter = express.Router();
 productsRouter.post( "/product/image", upload.array( "book", 5 ), productsController.createProduct )
@@ -32,3 +32,4 @@ productsRouter.get( "/user/products", productsController.getUserProducts )
 productsRouter.patch( "/product/:productId", productsController.updateProduct )
 productsRouter.get( "/products/active", productsController.getAllActiveProducts )
 productsRouter.patch( "/products/update-main-image/:productId", productsController.updateMainImage )
+productsRouter.post( "/pagar/:productId", productsController.makePayment )

@@ -91,7 +91,7 @@ export class UserData {
         try {
             const user: PUBLIC_USER | null = await PRISMA_CLIENT.user.findFirst( {
                 where: { id: token },
-                select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true, avatar: true, cpf: true, phone_number: true }
+                 select: { id: true, birthday: true, created_at: true, email: true, role: true, status: true, username: true, avatar: true, cpf: true, phone_number: true }
             } )
 
             return user;

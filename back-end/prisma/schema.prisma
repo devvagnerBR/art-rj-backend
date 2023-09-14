@@ -8,52 +8,60 @@ datasource db {
 }
 
 model User {
+  id         String   @id
+  username   String   @unique @db.VarChar(20)
+  password   String
+  email      String   @unique
+  role       Role     @default(USER)
+  created_at DateTime @default(now())
+  birthday   String?
+  status     Boolean  @default(false)
+  avatar     String   @default("https://static.vecteezy.com/system/resources/previews/005/291/824/non_2x/illustration-of-statue-of-christ-the-redeemer-rio-de-janeiro-brazil-free-vector.jpg")
 
-    id String @id 
-    username String @unique @db.VarChar(20)
-    password String
-    email String @unique
-    role Role  @default(USER)
-    created_at DateTime @default(now())
-    birthday String? 
-    status Boolean @default(false)
-    avatar String @default("https://static.vecteezy.com/system/resources/previews/005/291/824/non_2x/illustration-of-statue-of-christ-the-redeemer-rio-de-janeiro-brazil-free-vector.jpg")
+  phone_number String? @unique
+  cpf          String? @unique
 
-    phone_number String?  @unique 
-    cpf String?  @unique 
+  products Product[]
+  Purchases Purchase[]
 
-    products Product[]
-
-    @@map("user")
-    
+  @@map("user")
 }
 
- 
 enum Role {
   USER
   ADMIN
 }
 
-
 model Product {
+  id       String @id
+  owner_id String
 
-  id String @id
-  owner_id  String
+  title        String   @unique
+  slug         String
+  description  String
+  quantity     Int
+  price        Int
+  images       String[]
+  main_image   String
+  is_available Boolean  @default(true)
 
-  title String @unique
-  slug String
-  description String
-  quantity Int
-  price Int 
-  images String[]
-  main_image String 
-  is_available Boolean @default(true)
-  
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  author User @relation(fields: [owner_id], references: [id])
+  owner User @relation(fields: [owner_id], references: [id])
 
   @@map("products")
+}
+
+model Purchase {
+  
+  id         String   @id
+  product_id String
+  user_id    String
+  created_at DateTime @default(now())
+
+  owner User @relation(fields: [product_id], references: [id])
+
+  @@map("purchases")
 
 }

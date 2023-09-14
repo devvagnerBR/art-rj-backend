@@ -37,3 +37,4 @@ userRouter.post( "/user/confirm-account", userController.sendValidateAccount )
 userRouter.post( "/user/validate-account", userController.validateAccount )
 userRouter.patch( "/user/change-password", userController.changePassword )
 userRouter.patch( "/user/update", userController.updateUser )
+

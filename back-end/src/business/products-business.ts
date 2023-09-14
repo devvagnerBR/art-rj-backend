@@ -1,10 +1,14 @@
+import { Response } from "express";
 import { ProductsData } from "../data/products-data";
 import { CustomError } from "../models/custom-error";
 import { ProductModel } from "../models/product-model";
 import { IdGenerator } from "../services/id-generator";
 import { Storage } from "../services/storage";
+import { StripeAPI } from "../services/stripe";
 import { FILE } from "../types/file-type";
 import { Validate } from "../utils/validate";
+import { Product } from "@prisma/client";
+import Stripe from "stripe";
 
 export class ProductsBusiness {
 
@@ -13,6 +17,7 @@ export class ProductsBusiness {
         private idGenerator: IdGenerator,
         private validate: Validate,
         private storage: Storage,
+        private stripe: StripeAPI
     ) { }
 
 
@@ -30,11 +35,15 @@ export class ProductsBusiness {
             ) throw new CustomError( 404, "one or more fields are empty" )
 
 
-            const id: string = this.idGenerator.generateId()
             const generatedImages = await this.storage.createGroupURL( images )
             if ( !generatedImages ) throw new CustomError( 404, "one or more fields are empty" )
 
             const tokenData = await this.validate.token( token )
+
+            const productAsStripe = await this.stripe.createProduct( title, description, price )
+            if ( !productAsStripe ) throw new CustomError( 404, "produto inválido" )
+
+            const id = productAsStripe.id
             await this.productData.createProduct( new ProductModel( id, tokenData.id, title, slug, description, quantity, price, generatedImages ) )
 
         } catch ( error: any ) {
@@ -73,8 +82,6 @@ export class ProductsBusiness {
 
             const tokenData = await this.validate.token( token )
 
-            console.log( title )
-
             const findProduct = await this.productData.getProductByProductId( productId, tokenData.id );
             if ( !findProduct ) throw new CustomError( 404, "no products were found by this id" );
 
@@ -105,6 +112,8 @@ export class ProductsBusiness {
         try {
 
             if ( !mainImage ) throw new CustomError( 404, "main image url needs to be provided" );
+
+            if ( !mainImage.includes( "https://" ) ) throw new CustomError( 404, "main image url needs to be provided" );
             const tokenData = await this.validate.token( token );
             if ( !productId ) throw new CustomError( 404, "no products were found by this id" );
 
@@ -119,4 +128,23 @@ export class ProductsBusiness {
         }
 
     }
+
+
+    makePayment = async ( productId: string ) => {
+
+        try {
+
+            const priceId = await this.stripe.getProductById( productId ) as string;
+            const result = await this.stripe.createPayment( priceId, productId );
+
+            if ( result ) return result.url;
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
+
+
+
 }

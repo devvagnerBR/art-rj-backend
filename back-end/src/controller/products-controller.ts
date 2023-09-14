@@ -3,8 +3,6 @@ import { ProductsBusiness } from '../business/products-business';
 import { CustomError } from '../models/custom-error';
 import { FILE } from '../types/file-type';
 
-
-
 export class ProductsController {
 
     constructor(
@@ -68,7 +66,6 @@ export class ProductsController {
                 res.status( 404 ).send( error.message );
             }
         }
-
     }
 
     getAllActiveProducts = async ( req: Request, res: Response ) => {
@@ -99,6 +96,25 @@ export class ProductsController {
 
             await this.productsBusiness.updateMainImage( token, productId, main_image );
             res.status( 200 ).send( { message: "main image updated successfully" } )
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+    }
+
+
+    makePayment = async ( req: Request, res: Response ) => {
+
+
+        try {
+
+            const { productId } = req.params
+            const result = await this.productsBusiness.makePayment( productId )
+            res.status( 200 ).send( { data: result } )
 
         } catch ( error: any ) {
             if ( error instanceof CustomError ) {

@@ -21,7 +21,7 @@ export class ProductModel {
 
 
     getId(): string { return this.id }
-    getOwner_id(): string { return this.owner_id }
+    getOwnerId(): string { return this.owner_id }
     getTitle(): string { return this.title }
     getSlug(): string { return this.slug }
     getDescription(): string { return this.description }

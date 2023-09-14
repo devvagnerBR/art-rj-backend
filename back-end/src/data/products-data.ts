@@ -12,7 +12,7 @@ export class ProductsData {
                 data: {
 
                     id: product.getId(),
-                    owner_id: product.getOwner_id(),
+                    owner_id: product.getOwnerId(),
                     title: product.getTitle(),
                     slug: product.getSlug(),
                     description: product.getDescription(),
@@ -20,8 +20,8 @@ export class ProductsData {
                     price: product.getPrice(),
                     images: product.getImages(),
                     main_image: product.getMainImage(),
-
                 }
+
             } )
 
         } catch ( error: any ) {
@@ -72,7 +72,7 @@ export class ProductsData {
         try {
 
             const products = await PRISMA_CLIENT.product.findFirst( {
-                where: { id: productId, owner_id: token },
+                where: { id: productId, owner_id: token }
             } )
 
             return products;
