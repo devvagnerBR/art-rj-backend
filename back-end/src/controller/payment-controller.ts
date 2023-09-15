@@ -13,11 +13,24 @@ export class PaymentController {
 
         try {
 
-            const event = req.body;
-            const token = req.headers.authorization as string;
-            await this.paymentBusiness.webhook( event, token );
-
+            const event = req.body
+            await this.paymentBusiness.webhook( event );
             res.json( { received: true } );
+
+        } catch ( error: any ) {
+            console.log( "deu erro aqui", error )
+        }
+    }
+
+
+    createPayment = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const token = req.headers.authorization as string;
+            const { productId } = req.params;
+            const result = await this.paymentBusiness.createPayment( productId, token )
+            res.status( 200 ).send( { data: result } )
 
         } catch ( error: any ) {
             if ( error instanceof CustomError ) {
@@ -26,6 +39,7 @@ export class PaymentController {
                 res.status( 404 ).send( error.message );
             }
         }
+
     }
 
 }

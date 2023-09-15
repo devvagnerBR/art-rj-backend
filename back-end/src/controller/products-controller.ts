@@ -106,23 +106,4 @@ export class ProductsController {
         }
     }
 
-
-    makePayment = async ( req: Request, res: Response ) => {
-
-
-        try {
-
-            const { productId } = req.params
-            const result = await this.productsBusiness.makePayment( productId )
-            res.status( 200 ).send( { data: result } )
-
-        } catch ( error: any ) {
-            if ( error instanceof CustomError ) {
-                res.status( 404 ).send( error.message );
-            } else {
-                res.status( 404 ).send( error.message );
-            }
-        }
-    }
-
 }

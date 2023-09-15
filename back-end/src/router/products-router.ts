@@ -32,4 +32,5 @@ productsRouter.get( "/user/products", productsController.getUserProducts )
 productsRouter.patch( "/product/:productId", productsController.updateProduct )
 productsRouter.get( "/products/active", productsController.getAllActiveProducts )
 productsRouter.patch( "/products/update-main-image/:productId", productsController.updateMainImage )
-productsRouter.post( "/pagar/:productId", productsController.makePayment )
+
+

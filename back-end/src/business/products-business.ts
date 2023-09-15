@@ -129,22 +129,4 @@ export class ProductsBusiness {
 
     }
 
-
-    makePayment = async ( productId: string ) => {
-
-        try {
-
-            const priceId = await this.stripe.getProductById( productId ) as string;
-            const result = await this.stripe.createPayment( priceId, productId );
-
-            if ( result ) return result.url;
-
-        } catch ( error: any ) {
-            throw new CustomError( error.statusCode, error.message )
-        }
-
-    }
-
-
-
 }

@@ -12,16 +12,16 @@ export class PaymentData {
                 data: {
                     id: payment.getId(),
                     user_id: payment.getUserId(),
-                    product_id: payment.getProductId()
+                    product_id: payment.getProductId(),
                 }
             } )
+
 
         } catch ( error: any ) {
             throw new Error( error.message )
         }
 
     }
-
 
 
 }

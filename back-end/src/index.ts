@@ -4,7 +4,7 @@ import { userRouter } from "./router/user-router";
 import { productsRouter } from "./router/products-router";
 import { paymentRouter } from "./router/payment-router";
 
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 4242;
 
 const app = express();
 
@@ -20,5 +20,3 @@ app.use( userRouter )
 app.use( productsRouter )
 app.use( paymentRouter )
 
-
-app.listen( 4242, () => console.log( 'Running on port 4242' ) );

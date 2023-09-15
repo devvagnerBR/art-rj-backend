@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import express from 'express';
+
 
 const SECRET_KEY = process.env.STRIPE_SECRET_KEY as string;
 export const stripe = new Stripe( SECRET_KEY, { apiVersion: "2023-08-16" } )
@@ -42,15 +42,15 @@ export class StripeAPI {
         }
     }
 
-    createPayment = async ( priceId: string, productId: string ) => {
+    createPayment = async ( config: { price_id: string, product_id: string, user_email: string, username: string } ) => {
 
 
         try {
 
             const customer = await stripe.customers.create( {
-                email: "devvagnerbr@gmail.com",
-                name: "devvagner",
-                metadata: { username: "devvagner", productId }
+                email: config.user_email,
+                name: config.username,
+                metadata: { username: config.username, product_id: config.product_id }
 
             } )
 
@@ -58,7 +58,7 @@ export class StripeAPI {
 
                 line_items: [
                     {
-                        price: priceId,
+                        price: config.price_id,
                         quantity: 1,
                     }
                 ],
@@ -71,7 +71,7 @@ export class StripeAPI {
             return session
 
         } catch ( error ) {
-            console.error( 'Erro ao criar o produto:', error );
+            console.error( 'Erro ao criar pagamento:', error );
         }
 
     }
