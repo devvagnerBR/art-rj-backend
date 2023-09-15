@@ -76,7 +76,7 @@ export class PaymentBusiness {
         try {
 
             if ( !productId ) throw new CustomError( 404, "product not found" );
-            
+
             const tokenData = await this.validate.token( token )
             const user = await this.validate.privateUser( tokenData.id );
 
@@ -94,6 +94,20 @@ export class PaymentBusiness {
             const result = await this.stripeAPI.createPayment( config );
 
             if ( result ) return result.url;
+
+        } catch ( error: any ) {
+            throw new CustomError( error.statusCode, error.message )
+        }
+
+    }
+
+    getPaymentHistory = async ( token: string ) => {
+
+        try {
+
+            const tokenData = await this.validate.token( token );
+            const result = await this.paymentData.getPaymentHistory( tokenData.id );
+            return result;
 
         } catch ( error: any ) {
             throw new CustomError( error.statusCode, error.message )

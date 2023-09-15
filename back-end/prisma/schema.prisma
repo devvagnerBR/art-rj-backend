@@ -21,7 +21,7 @@ model User {
   phone_number String? @unique
   cpf          String? @unique
 
-  products Product[]
+  products  Product[]
   Purchases Purchase[]
 
   @@map("user")
@@ -48,20 +48,19 @@ model Product {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  owner User @relation(fields: [owner_id], references: [id])
+  owner    User       @relation(fields: [owner_id], references: [id])
+  Purchase Purchase[]
 
   @@map("products")
 }
 
 model Purchase {
-  
   id         String   @id
   product_id String
   user_id    String
   created_at DateTime @default(now())
-
-  owner User @relation(fields: [user_id], references: [id])
+  owner      User     @relation(fields: [user_id], references: [id])
+  product    Product  @relation(fields: [product_id], references: [id])
 
   @@map("purchases")
-
 }

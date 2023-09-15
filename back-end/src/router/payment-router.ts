@@ -22,3 +22,4 @@ const paymentController: PaymentController = new PaymentController( paymentBusin
 
 paymentRouter.post( "/webhook", express.raw( { type: "application/json" } ), paymentController.webhook )
 paymentRouter.post( "/pagar/:productId", paymentController.createPayment )
+paymentRouter.get( "/history", paymentController.getPaymentHistory )

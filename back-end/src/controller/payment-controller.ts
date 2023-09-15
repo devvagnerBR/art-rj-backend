@@ -42,4 +42,22 @@ export class PaymentController {
 
     }
 
+    getPaymentHistory = async ( req: Request, res: Response ) => {
+
+        try {
+
+            const token = req.headers.authorization as string;
+            const data = await this.paymentBusiness.getPaymentHistory( token );
+            res.status( 200 ).send( { data } )
+
+        } catch ( error: any ) {
+            if ( error instanceof CustomError ) {
+                res.status( 404 ).send( error.message );
+            } else {
+                res.status( 404 ).send( error.message );
+            }
+        }
+
+    }
+
 }

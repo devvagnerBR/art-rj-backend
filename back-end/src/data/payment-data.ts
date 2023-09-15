@@ -23,5 +23,25 @@ export class PaymentData {
 
     }
 
+    getPaymentHistory = async ( token: string ) => {
+
+        try {
+
+            const products = await PRISMA_CLIENT.purchase.findMany( {
+                where: { user_id: token },
+                include: {
+                    product: {}
+                }
+
+
+            } )
+
+            return products
+        } catch ( error: any ) {
+            throw new Error( error.message )
+        }
+
+
+    }
 
 }
